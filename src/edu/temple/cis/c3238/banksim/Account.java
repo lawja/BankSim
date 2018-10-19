@@ -24,7 +24,7 @@ public class Account {
     public boolean withdraw(int amount) {
         if (amount <= balance) {
             int currentBalance = balance;
-//            Thread.yield(); // Try to force collision
+            //Thread.yield(); // Try to force collision
             int newBalance = currentBalance - amount;
             balance = newBalance;
             return true;
@@ -32,10 +32,22 @@ public class Account {
             return false;
         }
     }
+    
+    public void waitForAvailableFunds(int amount){
+        while(amount > balance){
+            try{
+                Thread.sleep(1);
+            }catch (Exception e){
+                ;
+            }
+            System.out.println("Amount: " + amount + "\tBalance: "+ balance);
+        }
+        return;
+    }
 
     public void deposit(int amount) {
         int currentBalance = balance;
-//        Thread.yield();   // Try to force collision
+        //Thread.yield();   // Try to force collision
         int newBalance = currentBalance + amount;
         balance = newBalance;
     }
