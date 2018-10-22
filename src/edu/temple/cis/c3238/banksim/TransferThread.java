@@ -1,6 +1,7 @@
 package edu.temple.cis.c3238.banksim;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 class TransferThread extends Thread {
@@ -24,7 +25,8 @@ class TransferThread extends Thread {
         for (int i = 0; i <= 10000; i++)  {
         
             try {
-            semaphore.acquire(); 
+            semaphore.acquire();
+
             } catch (InterruptedException ex){
             }
             int toAccount = (int) (bank.size() * Math.random());
@@ -32,7 +34,7 @@ class TransferThread extends Thread {
             
             bank.transfer(fromAccount, toAccount, amount);
             
-            semaphore.release(); 
+            semaphore.release();
 //            try {
 //                sleep(2);
 //            } catch (InterruptedException ex) {

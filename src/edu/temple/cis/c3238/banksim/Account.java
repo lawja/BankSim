@@ -9,11 +9,13 @@ public class Account {
     private volatile int balance;
     private final int id;
     private final Bank myBank;
-    private final ReentrantLock r_lock = new ReentrantLock();
-    public Account(Bank myBank, int id, int initialBalance) {
+    private final ReentrantLock r_lock;
+    
+    public Account(Bank myBank, int id, int initialBalance, ReentrantLock lock) {
         this.myBank = myBank;
         this.id = id;
         balance = initialBalance;
+        this.r_lock = lock;
     }
 
     public int getBalance() {
@@ -21,35 +23,45 @@ public class Account {
     }
 
     public synchronized boolean withdraw(int amount) {
+        
         if (amount <= balance) {
+            r_lock.lock();
             int currentBalance = balance;
             Thread.yield(); // Try to force collision
             int newBalance = currentBalance - amount;
             balance = newBalance;
+            r_lock.unlock();
             return true;
         } else {
             return false;
         }
+        
     }
     
     public synchronized void waitForSufficientFunds(int amount){
-        r_lock.lock();            
-       
+                  
+        boolean flag = false;
         while (amount >= balance){
+            flag = true;
             try{
                 wait();
             }catch (InterruptedException ex) {
             }
         }
+        
 
     }
 
     public synchronized void deposit(int amount) {
+        r_lock.lock();
+        
         int currentBalance = balance;
         Thread.yield();   // Try to force collision
         int newBalance = currentBalance + amount;
         balance = newBalance;
+        
         notifyAll();
+        r_lock.unlock();
     }
     
     @Override

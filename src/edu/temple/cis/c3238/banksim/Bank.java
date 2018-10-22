@@ -23,7 +23,7 @@ public class Bank {
         this.numAccounts = numAccounts;
         accounts = new Account[numAccounts];
         for (int i = 0; i < accounts.length; i++) {
-            accounts[i] = new Account(this, i, initialBalance);
+            accounts[i] = new Account(this, i, initialBalance, new ReentrantLock());
         }
         ntransacts = 0;
     }
@@ -34,9 +34,11 @@ public class Bank {
             return;
         }
 
+        r_lock.lock();
         if (accounts[from].withdraw(amount)) {
             accounts[to].deposit(amount);
         }
+        r_lock.unlock();
 
         r_lock.lock();
         try {
