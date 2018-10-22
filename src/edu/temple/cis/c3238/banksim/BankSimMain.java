@@ -24,6 +24,6 @@ public class BankSimMain {
             } catch (InterruptedException ex) {
             }
         }
-        b.test();
+        //b.test();
     }
 }

@@ -10,7 +10,7 @@ public class Bank {
     private final int initialBalance;
     private final int numAccounts;
     private final ReentrantLock r_lock = new ReentrantLock();
-
+    
     private boolean open = true;
 
     public synchronized boolean isOpen() {
@@ -29,10 +29,18 @@ public class Bank {
     }
 
     public void transfer(int from, int to, int amount) {
-        accounts[from].waitForSufficientFunds(amount);
+        
+        
         if (!open) {
             return;
         }
+
+        accounts[from].waitForSufficientFunds(amount);
+        
+        if (!open) {
+            return;
+        }
+        
 
         r_lock.lock();
         if (accounts[from].withdraw(amount)) {
@@ -101,6 +109,7 @@ public class Bank {
             synchronized (account) {
                 account.notifyAll();
             }
+            
 
         }
     }

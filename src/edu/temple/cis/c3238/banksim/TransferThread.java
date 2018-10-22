@@ -22,7 +22,7 @@ class TransferThread extends Thread {
     @Override
     public void run() {
         while(bank.isOpen()){
-        for (int i = 0; i <= 10000; i++)  {
+        for (int i = 0; i <= 1000; i++)  {
         
             try {
             semaphore.acquire();
@@ -42,8 +42,10 @@ class TransferThread extends Thread {
 //            }
         
         }
-        }
         bank.closeBank();
+        }
+        System.exit(0);
+        
     }
 }
 //    public void run() {
